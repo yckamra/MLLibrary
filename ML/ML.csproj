@@ -43,7 +43,6 @@
     <Compile Include="Layers\Loss\SoftMaxCrossEntropyLayer.cs" />
     <Compile Include="Layers\Loss\SquaredErrorLayer.cs" />
     <Compile Include="Models\SupervisedNetwork.cs" />
-    <Compile Include="UIandDriver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Layers\" />
