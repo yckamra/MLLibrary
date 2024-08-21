@@ -28,7 +28,8 @@ namespace ML
         }
 
         // TODO: TEST
-        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize, Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
         {
             return lossPrime(this.yTrue, output);
         }

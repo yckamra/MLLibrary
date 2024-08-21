@@ -23,7 +23,8 @@ namespace ML
             return this.output;
         }
 
-        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize, Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
         {
             return NetworkFunctions.ElementWiseMultiplication(outputGradient, this.activationPrime(this.input));
         }

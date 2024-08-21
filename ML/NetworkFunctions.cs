@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System;
 
-namespace ML
+namespace ML // TODO: Encapsulate, organize, and error check
 {
     public static class NetworkFunctions
     {
+        // -----------------------
+        // OPTIMIZATION ALGORITHMS
+        // -----------------------
 
-        // TODO: Encapsulate, organize, and error check
-
-        // Optimization Algorithms
-
-        public static double[,] GradientDescent(double learningRate, double[,] outputGradient, double[,] input, double[,] weights, double[,] biases, double[,] weightsCumulative, double[,] biasesCumulative)
+        public static double[,] GradientDescent(double learningRate, double[,] outputGradient,
+            double[,] input, double[,] weights, double[,] biases, double[,] weightsCumulative, double[,] biasesCumulative)
         {
             double[,] weightsGradient = NetworkFunctions.DotProduct(outputGradient, NetworkFunctions.Transpose(input));
 
@@ -21,7 +21,13 @@ namespace ML
             return NetworkFunctions.DotProduct(NetworkFunctions.Transpose(weights), outputGradient);
         }
 
-        // Random Gaussian Number Generator
+
+
+
+
+        // ------------------------
+        // RANDOM NUMBER GENERATION
+        // ------------------------
 
         private static System.Random rand = new System.Random();
 
@@ -38,6 +44,14 @@ namespace ML
             return randNormal;
         }
 
+
+
+
+
+        // -----------------------
+        // MATHEMATICAL OPERATIONS
+        // -----------------------
+
         public static double Power(double X, int powerOf) // TESTED AND COMPLETE
         {
             double Y = 1;
@@ -50,8 +64,42 @@ namespace ML
             return Y;
         }
 
-        // double[i, j] where i is the vertical for rows and j is the horizontal for columns
+        public static double Mean(double[,] featureMatrix) // TESTED AND COMPLETE
+        {
+            int rows = featureMatrix.GetLength(0);
+            double mean = 0;
+            for (int i = 0; i < rows; i++)
+            {
+                mean += featureMatrix[i, 0];
+            }
+            mean /= rows;
 
+            return mean;
+        }
+
+        public static double StandardDeviation(double[,] featureMatrix, double mean) // TESTED AND COMPLETE
+        {
+            int rows = featureMatrix.GetLength(0);
+            double standardDeviation = 0;
+
+            for (int i = 0; i < rows; i++)
+            {
+                standardDeviation += NetworkFunctions.Power((featureMatrix[i, 0] - mean), 2);
+            }
+            standardDeviation /= rows;
+
+            return standardDeviation;
+        }
+
+
+
+
+
+        // ---------------------------
+        // MATRIX TO MATRIX OPERATIONS
+        // ---------------------------
+
+        // double[i, j] where i is the vertical for rows and j is the horizontal for columns
         public static double[,] DotProduct(double[,] matrixA, double[,] matrixB) // TESTED AND COMPLETE
         {
 
@@ -108,22 +156,31 @@ namespace ML
             return returnMatrix;
         }
 
-        public static double[,] Transpose(double[,] matrix) // TESTED AND COMPLETE
+        public static double[,] ElementWiseMultiplication(double[,] matrixA, double[,] matrixB) // TESTED AND COMPLETE
         {
-            int rows = matrix.GetLength(0);
-            int columns = matrix.GetLength(1);
-            double[,] transposedMatrix = new double[columns, rows];
+            int rows = matrixA.GetLength(0);
+            int columns = matrixA.GetLength(1);
+
+            double[,] Y = new double[rows, columns];
 
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    transposedMatrix[j, i] = matrix[i, j];
+                    Y[i, j] = matrixA[i, j] * matrixB[i, j];
                 }
             }
 
-            return transposedMatrix;
+            return Y;
         }
+
+
+
+
+
+        // ---------------------------
+        // MATRIX TO SCALAR OPERATIONS
+        // ---------------------------
 
         public static double[,] ScalarMultiplication(double[,] matrix, double scalar) // TESTED AND COMPLETE
         {
@@ -155,24 +212,6 @@ namespace ML
             return returnMatrix;
         }
 
-        public static double[,] ElementWiseMultiplication(double[,] matrixA, double[,] matrixB) // TESTED AND COMPLETE
-        {
-            int rows = matrixA.GetLength(0);
-            int columns = matrixA.GetLength(1);
-
-            double[,] Y = new double[rows, columns];
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    Y[i, j] = matrixA[i, j] * matrixB[i, j];
-                }
-            }
-
-            return Y;
-        }
-
         public static double[,] ScalarMatrixAddition(double[,] X, double scalar) // For subtraction just pass negative scalar
         {
             int rows = X.GetLength(0);
@@ -185,6 +224,31 @@ namespace ML
                 Y[i, 0] = scalar + X[i, 0];
             }
             return Y;
+        }
+
+
+
+
+
+        // -----------------------------------
+        // MATRIX MANIPULATION AND ALTERATION
+        // -----------------------------------
+
+        public static double[,] Transpose(double[,] matrix) // TESTED AND COMPLETE
+        {
+            int rows = matrix.GetLength(0);
+            int columns = matrix.GetLength(1);
+            double[,] transposedMatrix = new double[columns, rows];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    transposedMatrix[j, i] = matrix[i, j];
+                }
+            }
+
+            return transposedMatrix;
         }
 
         public static double[,] GetARow(double[,] matrix, int rowIndex) // TESTED AND COMPLETE
@@ -213,34 +277,97 @@ namespace ML
             return Y;
         }
 
-        public static double Mean(double[,] featureMatrix) // TESTED AND COMPLETE
+        public static void PrintMatrix(double[,] weights) // TESTED AND COMPLETE
         {
-            int rows = featureMatrix.GetLength(0);
-            double mean = 0;
-            for (int i = 0; i < rows; i++)
-            {
-                mean += featureMatrix[i, 0];
-            }
-            mean /= rows;
-
-            return mean;
-        }
-
-        public static double StandardDeviation(double[,] featureMatrix, double mean) // TESTED AND COMPLETE
-        {
-            int rows = featureMatrix.GetLength(0);
-            double standardDeviation = 0;
+            int rows = weights.GetLength(0);
+            int columns = weights.GetLength(1);
 
             for (int i = 0; i < rows; i++)
             {
-                standardDeviation += NetworkFunctions.Power((featureMatrix[i, 0] - mean), 2);
+                for (int j = 0; j < columns; j++)
+                {
+                    Console.WriteLine("Row: " + i + " Column: " + j + " = " + weights[i, j]);
+                }
             }
-            standardDeviation /= rows;
-
-            return standardDeviation;
         }
 
-        public static void SplitData(double[,] totalData, double[,] trainDataInput, double[,] crossValidateDataInput, double[,] trainDataOutput, double[,] crossValidateDataOutput, double percentForTrain)
+        public static void MatrixHardCopy(double[,] TheThingMatrix, double[,] MatrixToCopy)
+        {
+            int rows = MatrixToCopy.GetLength(0);
+            int columns = MatrixToCopy.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    TheThingMatrix[i, j] = MatrixToCopy[i, j];
+                }
+            }
+        }
+
+
+
+
+
+        // ----------------
+        // DATASET HANDLING
+        // ----------------
+
+        // This allows for adding features to the end of the dataset matrix
+        public static void AppendMatrix(List<List<string>> originalMatrix, List<List<string>> matrixToAppend)
+        {
+            for (int i = 0; i < matrixToAppend.Count; i++)
+            {
+                for (int j = 0; j < matrixToAppend[i].Count; j++)
+                {
+                    originalMatrix[i].Add(matrixToAppend[i][j]);
+                }
+            }
+        }
+
+        public static double[,] HotEncodeFeatureColumn(List<List<string>> redHotSoils, string value)
+        {
+            List<string> hotCodeLine = new List<string>();
+            if (value == "loam")
+            {
+                hotCodeLine.Add("1");
+                hotCodeLine.Add("0");
+                hotCodeLine.Add("0");
+            }
+            else if (value == "sandy")
+            {
+                hotCodeLine.Add("0");
+                hotCodeLine.Add("1");
+                hotCodeLine.Add("0");
+            }
+            else if (value == "clay")
+            {
+                hotCodeLine.Add("0");
+                hotCodeLine.Add("0");
+                hotCodeLine.Add("1");
+            }
+            redHotSoils.Add(hotCodeLine);
+
+
+
+            return null;
+        }
+
+        public static void NormalizeFeatureColumn(double[,] inputMatrix, int featureColumnNumber)
+        {
+            int column = featureColumnNumber;
+            double[,] inputFeatureColumn = NetworkFunctions.GetAColumn(inputMatrix, column);
+            int rows = inputFeatureColumn.GetLength(0);
+            double mean = NetworkFunctions.Mean(inputFeatureColumn);
+            double standardDeviation = NetworkFunctions.StandardDeviation(inputFeatureColumn, mean);
+            for (int i = 0; i < rows; i++)
+            {
+                inputMatrix[i, column] = (inputMatrix[i, column] - mean) / standardDeviation;
+            }
+        }
+
+        public static void SplitData(double[,] totalData, double[,] trainDataInput, double[,]
+    crossValidateDataInput, double[,] trainDataOutput, double[,] crossValidateDataOutput, double percentForTrain)
         {
 
             int totalExamples = totalData.GetLength(0);
@@ -291,47 +418,6 @@ namespace ML
                 double temp = array[row1, col];
                 array[row1, col] = array[row2, col];
                 array[row2, col] = temp;
-            }
-        }
-
-        public static void PrintMatrix(double[,] weights) // TESTED AND COMPLETE
-        {
-            int rows = weights.GetLength(0);
-            int columns = weights.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    Console.WriteLine("Row: " + i + " Column: " + j + " = " + weights[i, j]);
-                }
-            }
-        }
-
-        public static void NormalizeFeatureColumn(double[,] inputMatrix, int featureColumnNumber)
-        {
-            int column = featureColumnNumber;
-            double[,] inputFeatureColumn = NetworkFunctions.GetAColumn(inputMatrix, column);
-            int rows = inputFeatureColumn.GetLength(0);
-            double mean = NetworkFunctions.Mean(inputFeatureColumn);
-            double standardDeviation = NetworkFunctions.StandardDeviation(inputFeatureColumn, mean);
-            for (int i = 0; i < rows; i++)
-            {
-                inputMatrix[i, column] = (inputMatrix[i, column] - mean) / standardDeviation;
-            }
-        }
-
-        public static void MatrixHardCopy(double[,] TheThingMatrix, double[,] MatrixToCopy)
-        {
-            int rows = MatrixToCopy.GetLength(0);
-            int columns = MatrixToCopy.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    TheThingMatrix[i, j] = MatrixToCopy[i, j];
-                }
             }
         }
     }

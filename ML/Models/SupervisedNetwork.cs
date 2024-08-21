@@ -10,7 +10,7 @@ namespace ML
         // Layers includes: Dense layers, Activation layers, AND the Loss layer
         // so a full forward pass which includes the Loss layer will give the loss
         // of an example and not the prediction of the network.
-        private List<Layer> layers;
+        public List<Layer> layers;
 
         private void ForwardPass(double[,] inputForNextLayer, double[,] yTrueForExample)
         {
@@ -35,7 +35,8 @@ namespace ML
             }
         }
 
-        private void BackwardPass(double[,] outputGradient, double learningRate, int batchSize, Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+        private void BackwardPass(double[,] outputGradient, double learningRate, int batchSize,
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
         {
             foreach (Layer layer in this.layers)
             {
@@ -61,7 +62,8 @@ namespace ML
         }
 
         // The input should have a row as a single training example
-        public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize, Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
+        public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize,
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
         {
             for (int i = 0; i < epochs; i++)
             {

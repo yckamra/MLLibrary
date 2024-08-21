@@ -59,15 +59,21 @@ namespace ML
             return NetworkFunctions.MatrixAddition(NetworkFunctions.DotProduct(weights, input), biases);
         }
 
-        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize, Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+        public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
         {
             ++batchSizeCumulator;
-            double[,] Y = OptimizationAlgorithm(learningRate, outputGradient, input, weights, biases, weightsGradientCumulative, biasesGradientCumulative);
+            double[,] Y = OptimizationAlgorithm(learningRate, outputGradient, input, weights, biases,
+                weightsGradientCumulative, biasesGradientCumulative);
 
             if (batchSizeCumulator == batchSize)
             {
-                weights = NetworkFunctions.MatrixSubtraction(weights, NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(weightsGradientCumulative, batchSize), learningRate));
-                biases = NetworkFunctions.MatrixSubtraction(biases, NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(biasesGradientCumulative, batchSize), learningRate));
+                weights = NetworkFunctions.MatrixSubtraction(weights,
+                    NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(weightsGradientCumulative,
+                    batchSize), learningRate));
+                biases = NetworkFunctions.MatrixSubtraction(biases,
+                    NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(biasesGradientCumulative,
+                    batchSize), learningRate));
 
                 InitializeWeightsAndBiasesCumulative();
                 batchSizeCumulator = 0;
