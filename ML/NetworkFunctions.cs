@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace ML // TODO: Encapsulate, organize, and error check
 {
@@ -309,9 +310,13 @@ namespace ML // TODO: Encapsulate, organize, and error check
 
 
 
+
         // ----------------
         // DATASET HANDLING
         // ----------------
+
+        // CSV -> List<List<string>> for all data -> one hot encode -> turn to double[,] -> normalize -> split -> remove and
+        // add yTrues to their own double[,] for both train and cross validate
 
         // This allows for adding features to the end of the dataset matrix
         public static void AppendMatrix(List<List<string>> originalMatrix, List<List<string>> matrixToAppend)
@@ -325,30 +330,25 @@ namespace ML // TODO: Encapsulate, organize, and error check
             }
         }
 
+        public static double[,] StringMatrixToDoubleMatrix(List<List<string>> stringMatrix)
+        {
+            int rows = stringMatrix.Count;
+            int columns = stringMatrix[0].Count;
+            double[,] Y = new double[rows, columns];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    Y[i, j] = Double.Parse(stringMatrix[i][j]);
+                }
+            }
+            return Y;
+        }
+
         public static double[,] HotEncodeFeatureColumn(List<List<string>> redHotSoils, string value)
         {
-            List<string> hotCodeLine = new List<string>();
-            if (value == "loam")
-            {
-                hotCodeLine.Add("1");
-                hotCodeLine.Add("0");
-                hotCodeLine.Add("0");
-            }
-            else if (value == "sandy")
-            {
-                hotCodeLine.Add("0");
-                hotCodeLine.Add("1");
-                hotCodeLine.Add("0");
-            }
-            else if (value == "clay")
-            {
-                hotCodeLine.Add("0");
-                hotCodeLine.Add("0");
-                hotCodeLine.Add("1");
-            }
-            redHotSoils.Add(hotCodeLine);
-
-
+            
 
             return null;
         }
@@ -419,6 +419,42 @@ namespace ML // TODO: Encapsulate, organize, and error check
                 array[row1, col] = array[row2, col];
                 array[row2, col] = temp;
             }
+        }
+
+        public static void HandleData(string filePath)
+        {
+
+            List<List<string>> inputList = new List<List<string>>();
+
+            // Open the file using StreamReader
+            using (var reader = new StreamReader(filePath))
+            {
+                reader.ReadLine();
+                int row = 0;
+                // Read each line until the end of the file
+                while (!reader.EndOfStream)
+                {
+                    int column = 0;
+                    List<string> newLine = new List<string>();
+                    inputList.Add(newLine);
+
+                    // Read a line
+                    var line = reader.ReadLine();
+
+                    // Split the line into columns
+                    var values = line.Split(',');
+
+                    // Process the data
+                    foreach (var value in values)
+                    {
+                        string valueAsString = value.ToString();
+                        inputList[row].Add(valueAsString);
+                        column++;
+                    }
+                    row++;
+                }
+            }
+
         }
     }
 }
