@@ -213,7 +213,7 @@ namespace ML
             return Y;
         }
 
-        public static double Mean(double[,] featureMatrix)
+        public static double Mean(double[,] featureMatrix) // TESTED AND COMPLETE
         {
             int rows = featureMatrix.GetLength(0);
             double mean = 0;
@@ -226,7 +226,7 @@ namespace ML
             return mean;
         }
 
-        public static double StandardDeviation(double[,] featureMatrix, double mean)
+        public static double StandardDeviation(double[,] featureMatrix, double mean) // TESTED AND COMPLETE
         {
             int rows = featureMatrix.GetLength(0);
             double standardDeviation = 0;
@@ -294,7 +294,7 @@ namespace ML
             }
         }
 
-        public static void PrintMatrix(double[,] weights)
+        public static void PrintMatrix(double[,] weights) // TESTED AND COMPLETE
         {
             int rows = weights.GetLength(0);
             int columns = weights.GetLength(1);
