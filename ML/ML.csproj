@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5445B561-A9A5-4FAE-8D96-3B88CE4346A3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ML</RootNamespace>
+    <AssemblyName>ML</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NetworkFunctions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Layers\Layer.cs" />
+    <Compile Include="Layers\Dense\Dense.cs" />
+    <Compile Include="Layers\Activation\Activation.cs" />
+    <Compile Include="Layers\Activation\ReLULayer.cs" />
+    <Compile Include="Layers\Activation\SigmoidLayer.cs" />
+    <Compile Include="Layers\Activation\SoftMaxLayer.cs" />
+    <Compile Include="Layers\Loss\Loss.cs" />
+    <Compile Include="Layers\Loss\BinaryCrossEntropyLayer.cs" />
+    <Compile Include="Layers\Loss\SoftMaxCrossEntropyLayer.cs" />
+    <Compile Include="Layers\Loss\SquaredErrorLayer.cs" />
+    <Compile Include="Models\SupervisedNetwork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Layers\" />
+    <Folder Include="Layers\Dense\" />
+    <Folder Include="Layers\Activation\" />
+    <Folder Include="Layers\Loss\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
