@@ -421,15 +421,74 @@ namespace ML // TODO: Encapsulate, organize, and error check
             }
         }
 
+        public static void PrintList(List<List<string>> data) // TESTED AND COMPLETE
+        {
+            for (int i = 0; i < data.Count; i++)
+            {
+                string row = "";
+                for (int j = 0; j < data[0].Count; j++)
+                {
+                    row += data[i][j];
+                    if(j != data[0].Count - 1)
+                    {
+                        row += ", ";
+                    }
+                }
+                Console.WriteLine("[" + row + "]");
+            }
+        }
+
         public static void HandleData(string filePath)
         {
 
-            List<List<string>> inputList = new List<List<string>>();
+            List<List<string>> data = new List<List<string>>();
 
+            CSVToStringList(data, filePath);
+
+            Console.WriteLine("-----------");
+            Console.WriteLine("Raw Dataset");
+            Console.WriteLine("-----------");
+            Console.WriteLine();
+            Console.WriteLine("Features: " + (data[0].Count - 1));
+            Console.WriteLine("Examples: " + (data.Count - 1));
+            Console.WriteLine();
+            PrintList(data);
+
+            Console.WriteLine();
+            Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type DONE and enter to stop):");
+            List<string> featuresToOneHotEncode = new List<string>();
+
+            string userInput = "";
+
+            while(userInput!= "DONE")
+            {
+                userInput = Console.ReadLine();
+                if (featuresToOneHotEncode.Contains(userInput))
+                {
+                    continue;
+                }
+                else if (userInput == "DONE")
+                {
+                    continue;
+                }
+                else if (!data[0].Contains(userInput))
+                {
+                    continue;
+                }
+                else
+                {
+                    featuresToOneHotEncode.Add(userInput);
+                }
+            }
+
+        }
+
+        private static void CSVToStringList(List<List<string>> inputList, string filePath)
+        {
             // Open the file using StreamReader
             using (var reader = new StreamReader(filePath))
             {
-                reader.ReadLine();
+                
                 int row = 0;
                 // Read each line until the end of the file
                 while (!reader.EndOfStream)
@@ -454,7 +513,6 @@ namespace ML // TODO: Encapsulate, organize, and error check
                     row++;
                 }
             }
-
         }
     }
 }
