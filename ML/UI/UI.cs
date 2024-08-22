@@ -14,15 +14,20 @@ namespace ML
             // feature_train.csv, feature_test.csv, target_train.csv, target_test.csv
             string featureTrainCSVName = "feature_train.csv";
             string featureTrainCSVPath = Path.Combine(pathToCSVDirectory, featureTrainCSVName);
+            List<List<string>> featureTrainList = new List<List<string>>();
 
             string featureTestCSVName = "feature_test.csv";
             string featureTestCSVPath = Path.Combine(pathToCSVDirectory, featureTestCSVName);
+            List<List<string>> featureTestList = new List<List<string>>();
+
 
             string targetTrainCSVName = "target_train.csv";
             string targetTrainCSVPath = Path.Combine(pathToCSVDirectory, targetTrainCSVName);
+            List<List<string>> targetTrainList = new List<List<string>>();
 
             string targetTestCSVName = "target_test.csv";
             string targetTestCSVPath = Path.Combine(pathToCSVDirectory, targetTestCSVName);
+            List<List<string>> targetTestList = new List<List<string>>();
 
             if (File.Exists(featureTrainCSVPath) && File.Exists(featureTestCSVPath) &&
                 File.Exists(targetTrainCSVPath) && File.Exists(targetTestCSVPath))
@@ -40,7 +45,20 @@ namespace ML
                         }
                         else if (userInput == "N")
                         {
-                            // fill the doubles with the csv files data
+                            // fill the lists with the csv files data
+                            DataFunctions.LoadCSV(featureTrainList, featureTrainCSVPath);
+                            DataFunctions.LoadCSV(featureTestList, featureTestCSVPath);
+                            DataFunctions.LoadCSV(targetTrainList, targetTrainCSVPath);
+                            DataFunctions.LoadCSV(targetTestList, targetTestCSVPath);
+
+                            // convert the lists to double[,]
+                            featureTrainData = DataFunctions.StringMatrixToDoubleMatrix(featureTrainList);
+                            featureTestData = DataFunctions.StringMatrixToDoubleMatrix(featureTestList);
+                            targetTrainData = DataFunctions.StringMatrixToDoubleMatrix(targetTrainList);
+                            targetTestData = DataFunctions.StringMatrixToDoubleMatrix(targetTestList);
+
+                            Console.WriteLine("Data has been stored within arrays: Ready for training.");
+
                             return;
                         }
                         else
@@ -291,7 +309,11 @@ namespace ML
 
             Console.WriteLine();
             Console.WriteLine("Saving data to CSV files");
-            //HandleStoreDataCSV();
+
+            DataFunctions.CreateCSVFileInDirectory(pathToCSVDirectory, featureTrainData, featureTrainCSVName);
+            DataFunctions.CreateCSVFileInDirectory(pathToCSVDirectory, featureTestData, featureTestCSVName);
+            DataFunctions.CreateCSVFileInDirectory(pathToCSVDirectory, targetTrainData, targetTrainCSVName);
+            DataFunctions.CreateCSVFileInDirectory(pathToCSVDirectory, targetTestData, targetTestCSVName);
 
         }
     }

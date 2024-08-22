@@ -292,5 +292,74 @@ namespace ML
                 }
             }
         }
+
+        public static void LoadCSV(List<List<string>> data, string filePath)
+        {
+            // Open the file using StreamReader
+            using (var reader = new StreamReader(filePath))
+            {
+
+                int row = 0;
+                // Read each line until the end of the file
+                while (!reader.EndOfStream)
+                {
+                    List<string> newRow = new List<string>();
+                    data.Add(newRow);
+
+                    int column = 0;
+
+                    // Read a line
+                    var line = reader.ReadLine();
+
+                    // Split the line into columns
+                    var values = line.Split(',');
+
+                    // Process the data
+                    foreach (var value in values)
+                    {
+                        string valueAsString = value.ToString();
+                        data[row].Add(valueAsString);
+                        column++;
+                    }
+                    row++;
+                }
+            }
+        }
+
+        public static void CreateCSVFileInDirectory(string directoryPath, double[,] data, string fileName)
+        {
+            // Ensure the directory exists, create it if it doesn't
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Combine directory path and file name to get the full file path
+            string filePath = Path.Combine(directoryPath, fileName);
+
+            // Create and fill the CSV file
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                int rows = data.GetLength(0);
+                int cols = data.GetLength(1);
+
+                for (int i = 0; i < rows; i++)
+                {
+                    string[] rowValues = new string[cols];
+
+                    for (int j = 0; j < cols; j++)
+                    {
+                        // Convert double values to string
+                        rowValues[j] = data[i, j].ToString();
+                    }
+
+                    // Join the values with commas and write as a line in the CSV file
+                    string row = string.Join(",", rowValues);
+                    writer.WriteLine(row);
+                }
+            }
+
+            Console.WriteLine($"CSV file saved at: {filePath}");
+        }
     }
 }
