@@ -44,7 +44,7 @@
     <Compile Include="Layers\Loss\SquaredErrorLayer.cs" />
     <Compile Include="Models\SupervisedNetwork.cs" />
     <Compile Include="UI.cs" />
-    <Compile Include="EmptyClass.cs" />
+    <Compile Include="DataFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Layers\" />
