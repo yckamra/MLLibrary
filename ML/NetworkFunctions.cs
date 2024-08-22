@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace ML // TODO: Encapsulate, organize, and error check
 {
@@ -346,11 +347,34 @@ namespace ML // TODO: Encapsulate, organize, and error check
             return Y;
         }
 
-        public static double[,] HotEncodeFeatureColumn(List<List<string>> redHotSoils, string value)
+        public static void OneHotEncodeColumnInPlace(List<List<string>> data, int columnIndex)
         {
-            
+            // Step 1: Find unique values in the specified column
+            var uniqueValues = data.Select(row => row[columnIndex]).Distinct().ToList();
 
-            return null;
+            // Step 2: Modify the data in place
+            foreach (var row in data)
+            {
+                // Step 2a: Create new one-hot encoded values for the column
+                List<string> oneHotEncodedValues = uniqueValues
+                    .Select(value => row[columnIndex] == value ? "1" : "0")
+                    .ToList();
+
+                // Step 2b: Remove the original column value
+                row.RemoveAt(columnIndex);
+
+                // Step 2c: Insert the new one-hot encoded columns in place of the original column
+                row.InsertRange(columnIndex, oneHotEncodedValues);
+            }
+        }
+
+        public static void HandleOneHotEncoding(List<List<string>> data, List<string> featuresToOneHotEncode)
+        {
+            foreach(string feature in featuresToOneHotEncode)
+            {
+                int index = featuresToOneHotEncode.IndexOf(feature); // TODO: get new labels and remember that labels are different now
+                OneHotEncodeColumnInPlace(data, index);
+            }
         }
 
         public static void NormalizeFeatureColumn(double[,] inputMatrix, int featureColumnNumber)
@@ -443,19 +467,24 @@ namespace ML // TODO: Encapsulate, organize, and error check
 
             List<List<string>> data = new List<List<string>>();
 
-            CSVToStringList(data, filePath);
+            List<List<string>> labels = new List<List<string>>();
+            List<string> label = new List<string>();
+            labels.Add(label);
+
+            CSVToStringList(data, filePath, ref labels);
 
             Console.WriteLine("-----------");
             Console.WriteLine("Raw Dataset");
             Console.WriteLine("-----------");
             Console.WriteLine();
             Console.WriteLine("Features: " + (data[0].Count - 1));
-            Console.WriteLine("Examples: " + (data.Count - 1));
+            Console.WriteLine("Examples: " + (data.Count));
             Console.WriteLine();
+            PrintList(labels);
             PrintList(data);
 
             Console.WriteLine();
-            Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type DONE and enter to stop):");
+            Console.WriteLine("Enter feature number to one-hot encode (type name and press enter or type DONE and enter to stop):");
             List<string> featuresToOneHotEncode = new List<string>();
 
             string userInput = "";
@@ -471,7 +500,7 @@ namespace ML // TODO: Encapsulate, organize, and error check
                 {
                     continue;
                 }
-                else if (!data[0].Contains(userInput))
+                else if (!labels[0].Contains(userInput))
                 {
                     continue;
                 }
@@ -480,14 +509,35 @@ namespace ML // TODO: Encapsulate, organize, and error check
                     featuresToOneHotEncode.Add(userInput);
                 }
             }
+            int sizeOfFeature = featuresToOneHotEncode.Count;
+            HandleOneHotEncoding(data, featuresToOneHotEncode);
+
+            Console.WriteLine();
+            PrintList(data);
 
         }
 
-        private static void CSVToStringList(List<List<string>> inputList, string filePath)
+        private static void CSVToStringList(List<List<string>> inputList, string filePath, ref List<List<string>> labels)
         {
             // Open the file using StreamReader
             using (var reader = new StreamReader(filePath))
             {
+                {
+                    int column = 0;
+                    // Read a line
+                    var line = reader.ReadLine();
+
+                    // Split the line into columns
+                    var values = line.Split(',');
+
+                    // Process the data
+                    foreach (var value in values)
+                    {
+                            string valueAsString = value.ToString();
+                            labels[0].Add(valueAsString);
+                            column++;
+                    }
+                }
                 
                 int row = 0;
                 // Read each line until the end of the file
@@ -506,9 +556,9 @@ namespace ML // TODO: Encapsulate, organize, and error check
                     // Process the data
                     foreach (var value in values)
                     {
-                        string valueAsString = value.ToString();
-                        inputList[row].Add(valueAsString);
-                        column++;
+                            string valueAsString = value.ToString();
+                            inputList[row].Add(valueAsString);
+                            column++;
                     }
                     row++;
                 }
