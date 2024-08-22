@@ -316,8 +316,9 @@ namespace ML // TODO: Encapsulate, organize, and error check
         // DATASET HANDLING
         // ----------------
 
-        // CSV -> List<List<string>> for all data -> one hot encode -> turn to double[,] -> normalize -> split -> remove and
-        // add yTrues to their own double[,] for both train and cross validate
+        // CSV -> List<List<string>> for all features and List<List<string>> for targets -> one hot encode features ->
+        // one hot encode targets if needed -> turn to double[,] for both features and targets -> normalize features ->
+        // shuffle? -> split
 
         // This allows for adding features to the end of the dataset matrix
         public static void AppendMatrix(List<List<string>> originalMatrix, List<List<string>> matrixToAppend)
@@ -400,7 +401,7 @@ namespace ML // TODO: Encapsulate, organize, and error check
             int columns = totalData.GetLength(1);
 
 
-            ShuffleRows(totalData);
+            ShuffleRows(totalData); // TODO: ask user if shuffle (with big data sets this will be inefficient)
 
             for (int i = 0; i < examplesForTrain; i++)
             {
@@ -473,6 +474,8 @@ namespace ML // TODO: Encapsulate, organize, and error check
 
             CSVToStringList(data, filePath, ref labels);
 
+            // TODO: get target feature this way we can make sure it is one hot encoded at the very end if need be
+
             Console.WriteLine("-----------");
             Console.WriteLine("Raw Dataset");
             Console.WriteLine("-----------");
@@ -484,7 +487,7 @@ namespace ML // TODO: Encapsulate, organize, and error check
             PrintList(data);
 
             Console.WriteLine();
-            Console.WriteLine("Enter feature number to one-hot encode (type name and press enter or type DONE and enter to stop):");
+            Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type DONE and enter to stop):");
             List<string> featuresToOneHotEncode = new List<string>();
 
             string userInput = "";
