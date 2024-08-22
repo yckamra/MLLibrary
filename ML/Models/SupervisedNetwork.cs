@@ -12,7 +12,7 @@ namespace ML
         // of an example and not the prediction of the network.
         public List<Layer> layers;
 
-        private void ForwardPass(double[,] inputForNextLayer, double[,] yTrueForExample)
+        private void ForwardPass(ref double[,] inputForNextLayer, double[,] yTrueForExample)
         {
             foreach (Layer layer in this.layers)
             {
@@ -30,12 +30,14 @@ namespace ML
                 }
                 if (layer is Loss childLoss) // naming here is a little dark
                 {
-                    // TODO: this should handle calculation of loss for batch
+                    inputForNextLayer = childLoss.Forward(inputForNextLayer, yTrueForExample);
+
+                    continue;
                 }
             }
         }
 
-        private void BackwardPass(double[,] outputGradient, double learningRate, int batchSize,
+        private void BackwardPass(ref double[,] outputGradient, double learningRate, int batchSize,
             Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
         {
             foreach (Layer layer in this.layers)
@@ -67,8 +69,13 @@ namespace ML
         {
             for (int i = 0; i < epochs; i++)
             {
+                Console.WriteLine("Epoch: " + i);
+
                 int trainingExamples = yTrue.GetLength(0); // # rows (which is the # of training examples)
                 int numberOfLayers = layers.Count; // Hidden layers, output layer, and loss layer included
+
+                int iterationForBatch = 1;
+                double cost = 0;
 
                 for (int j = 0; j < trainingExamples; j++)
                 {
@@ -76,9 +83,9 @@ namespace ML
                     double[,] yTrueForExample = new double[1, 1];
                     yTrueForExample[0, 0] = yTrue[j, 0]; // the particular yTrue for the training example
 
-                    ForwardPass(inputForNextLayer, yTrueForExample);
+                    ForwardPass(ref inputForNextLayer, yTrueForExample);
 
-                    double yPredicted = inputForNextLayer[0, 0];
+                    cost += inputForNextLayer[0,0];
 
                     layers.Reverse();
 
@@ -88,12 +95,20 @@ namespace ML
                     {
                         batchSize = trainingExamples - j;
                     }
+                    if(iterationForBatch == batchSize)
+                    {
+                        cost /= batchSize;
+                        Console.WriteLine("Cost for batch: " + cost);
+                        cost = 0;
+                        iterationForBatch = 0;
+                    }
 
                     double[,] outputGradient = null;
 
-                    BackwardPass(outputGradient, learningRate, batchSize, OptimizationAlgorithm);
+                    BackwardPass(ref outputGradient, learningRate, batchSize, OptimizationAlgorithm);
 
                     layers.Reverse();
+                    iterationForBatch = iterationForBatch + 1;
                 }
             }
         }

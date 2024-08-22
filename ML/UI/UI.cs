@@ -8,8 +8,78 @@ namespace ML
 {
     public static class UI
     {
-        public static void HandleData(string filePath, string pathToCSVDirectory, double[,] featureTrainData,
-            double[,] featureTestData, double[,] targetTrainData, double[,] targetTestData)
+        /*public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize,
+    Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)*/
+        public static void HandleSupervisedTrain(SupervisedNetwork network, double[,] input, double[,] yTrue)
+        {
+            int epochs = 0;
+            double learningRate = 0;
+            int batchSize = 0;
+            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm;
+
+            Console.WriteLine();
+            Console.WriteLine("Enter number of epochs: ");
+            {
+                string userInput = "";
+                bool goodInput = false;
+                while (!goodInput)
+                {
+                    userInput = Console.ReadLine();
+                    if (int.TryParse(userInput, out int number))
+                    {
+                        epochs = int.Parse(userInput);
+                        break;
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            Console.WriteLine("Enter learning rate: ");
+            {
+                string userInput = "";
+                bool goodInput = false;
+                while (!goodInput)
+                {
+                    userInput = Console.ReadLine();
+                    if (double.TryParse(userInput, out double number))
+                    {
+                        learningRate = double.Parse(userInput);
+                        break;
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            Console.WriteLine("Enter batch size: ");
+            {
+                string userInput = "";
+                bool goodInput = false;
+                while (!goodInput)
+                {
+                    userInput = Console.ReadLine();
+                    if (int.TryParse(userInput, out int number))
+                    {
+                        batchSize = int.Parse(userInput);
+                        break;
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            Console.WriteLine("'Gradient descent' is being utilized as optimization algorithm.");
+            OptimizationAlgorithm = NetworkFunctions.GradientDescent;
+
+            network.Train(input, yTrue, epochs, learningRate, batchSize, OptimizationAlgorithm);
+        }
+
+        public static void HandleData(string filePath, string pathToCSVDirectory, ref double[,] featureTrainData,
+            ref double[,] featureTestData, ref double[,] targetTrainData, ref double[,] targetTestData)
         {
             // feature_train.csv, feature_test.csv, target_train.csv, target_test.csv
             string featureTrainCSVName = "feature_train.csv";

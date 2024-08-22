@@ -46,9 +46,9 @@ namespace ML
             {
                 for (int j = 0; j < inputSize; j++)
                 {
-                    weights[i, j] = 0;
+                    weightsGradientCumulative[i, j] = 0;
                 }
-                biases[i, 0] = 0;
+                biasesGradientCumulative[i, 0] = 0;
             }
         }
 
@@ -56,7 +56,9 @@ namespace ML
         {
             this.input = input;
 
-            return NetworkFunctions.MatrixAddition(NetworkFunctions.DotProduct(weights, input), biases);
+            double[,] Y = NetworkFunctions.MatrixAddition(NetworkFunctions.DotProduct(weights, input), biases);
+
+            return Y;
         }
 
         public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
