@@ -315,6 +315,7 @@ namespace ML // TODO: Encapsulate, organize, and error check
         // ----------------
         // DATASET HANDLING
         // ----------------
+        // TODO: the data is expected to have target in last column but we should check this for more functionality and control
 
         // CSV -> List<List<string>> for all features and List<List<string>> for targets -> one hot encode features ->
         // one hot encode targets if needed -> turn to double[,] for both features and targets -> normalize features ->
@@ -348,11 +349,18 @@ namespace ML // TODO: Encapsulate, organize, and error check
             return Y;
         }
 
-        public static void OneHotEncodeColumnInPlace(List<List<string>> data, int columnIndex)
+        public static void OneHotEncodeColumnInPlace(List<List<string>> data, int columnIndex, List<List<string>> labels)
         {
             // Step 1: Find unique values in the specified column
             var uniqueValues = data.Select(row => row[columnIndex]).Distinct().ToList();
 
+            List<string> newLabels = new List<string>();
+            foreach(var value in uniqueValues)
+            {
+                newLabels.Add(value);
+            }
+            labels[0].RemoveAt(columnIndex);
+            labels[0].InsertRange(columnIndex, newLabels);
             // Step 2: Modify the data in place
             foreach (var row in data)
             {
@@ -369,12 +377,25 @@ namespace ML // TODO: Encapsulate, organize, and error check
             }
         }
 
-        public static void HandleOneHotEncoding(List<List<string>> data, List<string> featuresToOneHotEncode)
+        public static void HandleOneHotEncoding(List<List<string>> data, List<List<string>> labels, List<string> featuresToOneHotEncode)
         {
-            foreach(string feature in featuresToOneHotEncode)
+            int count = featuresToOneHotEncode.Count;
+            for(int i = 0; i < count; i++)
             {
-                int index = featuresToOneHotEncode.IndexOf(feature); // TODO: get new labels and remember that labels are different now
-                OneHotEncodeColumnInPlace(data, index);
+                string feature = featuresToOneHotEncode[i];
+                int index = labels[0].IndexOf(feature);
+                OneHotEncodeColumnInPlace(data, index, labels);
+            }
+        }
+
+        public static void HandleNormalization(double[,] data, List<List<string>> labels, List<string> featuresToNormalize)
+        {
+            int count = featuresToNormalize.Count;
+            for(int i = 0; i < count; i++)
+            {
+                string feature = featuresToNormalize[i];
+                int index = labels[0].IndexOf(feature);
+                NormalizeFeatureColumn(data, index);
             }
         }
 
@@ -446,126 +467,286 @@ namespace ML // TODO: Encapsulate, organize, and error check
             }
         }
 
-        public static void PrintList(List<List<string>> data) // TESTED AND COMPLETE
+        public static void PrintData(List<List<string>> featureData, List<List<string>> targetData) // TESTED AND COMPLETE
         {
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < featureData.Count; i++)
             {
                 string row = "";
-                for (int j = 0; j < data[0].Count; j++)
+                for (int j = 0; j < featureData[0].Count; j++)
                 {
-                    row += data[i][j];
-                    if(j != data[0].Count - 1)
+                    row += featureData[i][j];
+                    if(j != featureData[0].Count - 1)
                     {
                         row += ", ";
                     }
                 }
-                Console.WriteLine("[" + row + "]");
+                Console.Write("[" + row + "]");
+
+                string targetRow = "";
+                for (int j = 0; j < targetData[0].Count; j++)
+                {
+                    targetRow += targetData[i][j];
+                    if (j != targetData[0].Count - 1)
+                    {
+                        targetRow += ", ";
+                    }
+                }
+
+                Console.WriteLine("[" + targetRow + "]");
+            }
+        }
+
+        public static void PrintData(double[,] featureData, double[,] targetData) // TESTED AND COMPLETE
+        {
+            for (int i = 0; i < featureData.GetLength(0); i++)
+            {
+                string row = "";
+                for (int j = 0; j < featureData.GetLength(1); j++)
+                {
+                    row += featureData[i,j];
+                    if (j != featureData.GetLength(1) - 1)
+                    {
+                        row += ", ";
+                    }
+                }
+                Console.Write("[" + row + "]");
+
+                string targetRow = "";
+                for (int j = 0; j < targetData.GetLength(1); j++)
+                {
+                    targetRow += targetData[i,j];
+                    if (j != targetData.GetLength(1) - 1)
+                    {
+                        targetRow += ", ";
+                    }
+                }
+
+                Console.WriteLine("[" + targetRow + "]");
+            }
+        }
+
+        private static void CSVToStringList(List<List<string>> featureData, List<List<string>> featureLabels,
+    List<List<string>> targetData, List<List<string>> targetLabels, string filePath)
+        {
+            // Open the file using StreamReader
+            using (var reader = new StreamReader(filePath))
+            {
+                {
+
+                    int column = 0;
+                    // Read a line
+                    var line = reader.ReadLine();
+
+                    // Split the line into columns
+                    var values = line.Split(',');
+
+                    // Process the data
+                    foreach (var value in values)
+                    {
+                        if (column != values.Length - 1)
+                        {
+                            string valueAsString = value.ToString();
+                            featureLabels[0].Add(valueAsString);
+                            column++;
+                        }
+                        else
+                        {
+                            string valueAsString = value.ToString();
+                            targetLabels[0].Add(valueAsString);
+                            column++;
+                        }
+                    }
+                }
+
+                int row = 0;
+                // Read each line until the end of the file
+                while (!reader.EndOfStream)
+                {
+                    List<string> targetLine = new List<string>();
+                    targetData.Add(targetLine);
+                    List<string> dataLine = new List<string>();
+                    featureData.Add(dataLine);
+
+                    int column = 0;
+
+                    // Read a line
+                    var line = reader.ReadLine();
+
+                    // Split the line into columns
+                    var values = line.Split(',');
+
+                    // Process the data
+                    foreach (var value in values)
+                    {
+                        if (column != values.Length - 1)
+                        {
+
+                            string valueAsString = value.ToString();
+                            featureData[row].Add(valueAsString);
+                            column++;
+                        }
+                        else
+                        {
+
+                            string valueAsString = value.ToString();
+                            targetData[row].Add(valueAsString);
+                            column++;
+                        }
+                    }
+                    row++;
+                }
             }
         }
 
         public static void HandleData(string filePath)
         {
 
-            List<List<string>> data = new List<List<string>>();
+            List<List<string>> featureData = new List<List<string>>();
+            List<List<string>> targetData = new List<List<string>>();
+            List<List<string>> featureLabels = new List<List<string>>();
+            List<List<string>> targetLabels = new List<List<string>>();
 
-            List<List<string>> labels = new List<List<string>>();
-            List<string> label = new List<string>();
-            labels.Add(label);
+            List<string> featureLabel = new List<string>();
+            featureLabels.Add(featureLabel);
+            List<string> targetLabel = new List<string>();
+            targetLabels.Add(targetLabel);
 
-            CSVToStringList(data, filePath, ref labels);
 
-            // TODO: get target feature this way we can make sure it is one hot encoded at the very end if need be
+            CSVToStringList(featureData, featureLabels, targetData, targetLabels, filePath);
+
 
             Console.WriteLine("-----------");
             Console.WriteLine("Raw Dataset");
             Console.WriteLine("-----------");
             Console.WriteLine();
-            Console.WriteLine("Features: " + (data[0].Count - 1));
-            Console.WriteLine("Examples: " + (data.Count));
+            Console.WriteLine("Features: " + (featureData[0].Count));
+            Console.WriteLine("Targets: " + targetData[0].Count);
+            Console.WriteLine("Examples: " + (featureData.Count));
             Console.WriteLine();
-            PrintList(labels);
-            PrintList(data);
+            PrintData(featureLabels, targetLabels);
+            PrintData(featureData, targetData);
 
             Console.WriteLine();
-            Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type DONE and enter to stop):");
+            Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type 'DONE' and enter to stop):");
             List<string> featuresToOneHotEncode = new List<string>();
 
-            string userInput = "";
-
-            while(userInput!= "DONE")
             {
-                userInput = Console.ReadLine();
-                if (featuresToOneHotEncode.Contains(userInput))
+                string userInput = "";
+
+                while (userInput != "DONE")
                 {
-                    continue;
-                }
-                else if (userInput == "DONE")
-                {
-                    continue;
-                }
-                else if (!labels[0].Contains(userInput))
-                {
-                    continue;
-                }
-                else
-                {
-                    featuresToOneHotEncode.Add(userInput);
+                    userInput = Console.ReadLine();
+                    if (featuresToOneHotEncode.Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else if (userInput == "DONE")
+                    {
+                        continue;
+                    }
+                    else if (!featureLabels[0].Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        featuresToOneHotEncode.Add(userInput);
+                    }
                 }
             }
-            int sizeOfFeature = featuresToOneHotEncode.Count;
-            HandleOneHotEncoding(data, featuresToOneHotEncode);
+            
+            HandleOneHotEncoding(featureData, featureLabels, featuresToOneHotEncode);
 
             Console.WriteLine();
-            PrintList(data);
+            Console.WriteLine("Would you like to one-hot encode target data ('Y' or 'N'): ");
 
-        }
-
-        private static void CSVToStringList(List<List<string>> inputList, string filePath, ref List<List<string>> labels)
-        {
-            // Open the file using StreamReader
-            using (var reader = new StreamReader(filePath))
             {
+                string userInput = "";
+
+                while (userInput != "Y" && userInput != "N")
                 {
-                    int column = 0;
-                    // Read a line
-                    var line = reader.ReadLine();
-
-                    // Split the line into columns
-                    var values = line.Split(',');
-
-                    // Process the data
-                    foreach (var value in values)
+                    userInput = Console.ReadLine();
+                    if (userInput == "Y")
                     {
-                            string valueAsString = value.ToString();
-                            labels[0].Add(valueAsString);
-                            column++;
-                    }
-                }
-                
-                int row = 0;
-                // Read each line until the end of the file
-                while (!reader.EndOfStream)
-                {
-                    int column = 0;
-                    List<string> newLine = new List<string>();
-                    inputList.Add(newLine);
-
-                    // Read a line
-                    var line = reader.ReadLine();
-
-                    // Split the line into columns
-                    var values = line.Split(',');
-
-                    // Process the data
-                    foreach (var value in values)
+                        HandleOneHotEncoding(targetData, targetLabels, targetLabels[0]);
+                        break;
+                    }else if (userInput == "N")
                     {
-                            string valueAsString = value.ToString();
-                            inputList[row].Add(valueAsString);
-                            column++;
+                        break;
                     }
-                    row++;
+                    else
+                    {
+
+                    }
                 }
             }
+
+            Console.WriteLine();
+            Console.WriteLine("--------------------");
+            Console.WriteLine("One Hot Encoded Data");
+            Console.WriteLine("--------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("Features: " + (featureData[0].Count));
+            Console.WriteLine("Targets: " + targetData[0].Count);
+            Console.WriteLine("Examples: " + (featureData.Count));
+            Console.WriteLine();
+
+            PrintData(featureLabels, targetLabels);
+            PrintData(featureData, targetData);
+
+
+
+            double[,] totalInputData = StringMatrixToDoubleMatrix(featureData);
+            double[,] totalOutputData = StringMatrixToDoubleMatrix(targetData);
+
+            Console.WriteLine();
+            Console.WriteLine("Enter feature names to normalize (type name or type 'DONE' and enter to stop): ");
+
+            List<string> featuresToNormalize = new List<string>();
+
+            {
+                string userInput = "";
+
+                while (userInput != "DONE")
+                {
+                    userInput = Console.ReadLine();
+                    if (featuresToNormalize.Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else if (userInput == "DONE")
+                    {
+                        continue;
+                    }
+                    else if (!featureLabels[0].Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        featuresToNormalize.Add(userInput);
+                    }
+                }
+            }
+
+            HandleNormalization(totalInputData, featureLabels, featuresToNormalize);
+
+            Console.WriteLine();
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Normalized Data");
+            Console.WriteLine("--------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("Features: " + (featureData[0].Count));
+            Console.WriteLine("Targets: " + targetData[0].Count);
+            Console.WriteLine("Examples: " + (featureData.Count));
+            Console.WriteLine();
+
+            PrintData(featureLabels, targetLabels);
+            PrintData(totalInputData, totalOutputData);
+
         }
+
     }
 }
