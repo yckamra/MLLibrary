@@ -16,7 +16,7 @@ namespace ML
         }
 
         public virtual double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
-            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+            OptimizationAlgorithm optimization)
         {
             return null;
         }

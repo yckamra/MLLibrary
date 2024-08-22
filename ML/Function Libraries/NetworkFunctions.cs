@@ -8,25 +8,6 @@ namespace ML // TODO: Encapsulate, organize, and error check; all Handle functio
 {
     public static class NetworkFunctions
     {
-        // -----------------------
-        // OPTIMIZATION ALGORITHMS
-        // -----------------------
-
-        public static double[,] GradientDescent(double learningRate, double[,] outputGradient,
-            double[,] input, double[,] weights, double[,] biases, double[,] weightsCumulative, double[,] biasesCumulative)
-        {
-            double[,] weightsGradient = NetworkFunctions.DotProduct(outputGradient, NetworkFunctions.Transpose(input));
-
-            weightsCumulative = NetworkFunctions.MatrixAddition(weightsCumulative, weightsGradient);
-            biasesCumulative = NetworkFunctions.MatrixAddition(biasesCumulative, outputGradient);
-
-            return NetworkFunctions.DotProduct(NetworkFunctions.Transpose(weights), outputGradient);
-        }
-
-
-
-
-
         // ------------------------
         // RANDOM NUMBER GENERATION
         // ------------------------

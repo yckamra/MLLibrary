@@ -13,7 +13,6 @@ namespace ML
         protected int outputSize;
         protected double[,] weightsGradientCumulative;
         protected double[,] biasesGradientCumulative;
-        protected int batchSizeCumulator;
 
         public Dense(int inputSize, int outputSize) // TESTED AND COMPLETE
         {
@@ -21,7 +20,6 @@ namespace ML
             this.outputSize = outputSize;
             this.weights = new double[outputSize, inputSize];
             this.biases = new double[outputSize, 1];
-            this.batchSizeCumulator = 0;
             weightsGradientCumulative = new double[outputSize, inputSize];
             biasesGradientCumulative = new double[outputSize, 1];
             InitializeWeightsAndBiases();
@@ -62,14 +60,11 @@ namespace ML
         }
 
         public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
-            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+            OptimizationAlgorithm optimization)
         {
-            ++batchSizeCumulator;
-            double[,] Y = OptimizationAlgorithm(learningRate, outputGradient, input, weights, biases,
-                weightsGradientCumulative, biasesGradientCumulative);
+            double[,] Y = optimization.GradientDescent(learningRate, outputGradient, input, weights, biases,
+                ref weightsGradientCumulative, ref biasesGradientCumulative);
 
-            if (batchSizeCumulator == batchSize)
-            {
                 weights = NetworkFunctions.MatrixSubtraction(weights,
                     NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(weightsGradientCumulative,
                     batchSize), learningRate));
@@ -78,8 +73,6 @@ namespace ML
                     batchSize), learningRate));
 
                 InitializeWeightsAndBiasesCumulative();
-                batchSizeCumulator = 0;
-            }
 
             return Y;
         }

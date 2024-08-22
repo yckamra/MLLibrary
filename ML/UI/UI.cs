@@ -15,7 +15,6 @@ namespace ML
             int epochs = 0;
             double learningRate = 0;
             int batchSize = 0;
-            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm;
 
             Console.WriteLine();
             Console.WriteLine("Enter number of epochs: ");
@@ -73,9 +72,9 @@ namespace ML
                 }
             }
             Console.WriteLine("'Gradient descent' is being utilized as optimization algorithm.");
-            OptimizationAlgorithm = NetworkFunctions.GradientDescent;
+            OptimizationAlgorithm optimization = new OptimizationAlgorithm();
 
-            network.Train(input, yTrue, epochs, learningRate, batchSize, OptimizationAlgorithm);
+            network.Train(input, yTrue, epochs, learningRate, batchSize, optimization);
         }
 
         public static void HandleData(string filePath, string pathToCSVDirectory, ref double[,] featureTrainData,

@@ -38,25 +38,25 @@ namespace ML
         }
 
         private void BackwardPass(ref double[,] outputGradient, double learningRate, int batchSize,
-            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)
+            OptimizationAlgorithm optimization)
         {
             foreach (Layer layer in this.layers)
             {
                 if (layer is Dense childDense)
                 {
-                    outputGradient = childDense.Backward(outputGradient, learningRate, batchSize, OptimizationAlgorithm);
+                    outputGradient = childDense.Backward(outputGradient, learningRate, batchSize, optimization);
 
                     continue;
                 }
                 if (layer is Activation childActivation)
                 {
-                    outputGradient = childActivation.Backward(outputGradient, learningRate, batchSize, OptimizationAlgorithm);
+                    outputGradient = childActivation.Backward(outputGradient, learningRate, batchSize, optimization);
 
                     continue;
                 }
                 if (layer is Loss childLoss)
                 {
-                    outputGradient = childLoss.Backward(outputGradient, learningRate, batchSize, OptimizationAlgorithm);
+                    outputGradient = childLoss.Backward(outputGradient, learningRate, batchSize, optimization);
 
                     continue;
                 }
@@ -65,17 +65,16 @@ namespace ML
 
         // The input should have a row as a single training example
         public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize,
-            Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
+            OptimizationAlgorithm optimization) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
         {
             for (int i = 0; i < epochs; i++)
             {
                 Console.WriteLine("Epoch: " + i);
 
+                double cost = 0;
+
                 int trainingExamples = yTrue.GetLength(0); // # rows (which is the # of training examples)
                 int numberOfLayers = layers.Count; // Hidden layers, output layer, and loss layer included
-
-                int iterationForBatch = 1;
-                double cost = 0;
 
                 for (int j = 0; j < trainingExamples; j++)
                 {
@@ -91,24 +90,12 @@ namespace ML
 
                     // We want to train all examples so if the batch size is bigger than the number of examples left
                     // we set the batch size to the remainder
-                    if (batchSize > trainingExamples - j)
-                    {
-                        batchSize = trainingExamples - j;
-                    }
-                    if(iterationForBatch == batchSize)
-                    {
-                        cost /= batchSize;
-                        Console.WriteLine("Cost for batch: " + cost);
-                        cost = 0;
-                        iterationForBatch = 0;
-                    }
 
                     double[,] outputGradient = null;
 
-                    BackwardPass(ref outputGradient, learningRate, batchSize, OptimizationAlgorithm);
+                    BackwardPass(ref outputGradient, learningRate, batchSize, optimization);
 
                     layers.Reverse();
-                    iterationForBatch = iterationForBatch + 1;
                 }
             }
         }

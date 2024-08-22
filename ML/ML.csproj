@@ -45,6 +45,7 @@
     <Compile Include="Function Libraries\DataFunctions.cs" />
     <Compile Include="Function Libraries\NetworkFunctions.cs" />
     <Compile Include="UI\UI.cs" />
+    <Compile Include="OptimizationAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Layers\" />
