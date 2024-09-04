@@ -13,6 +13,7 @@ namespace ML
         protected int outputSize;
         protected double[,] weightsGradientCumulative;
         protected double[,] biasesGradientCumulative;
+        protected int iteration;
 
         public Dense(int inputSize, int outputSize) // TESTED AND COMPLETE
         {
@@ -24,6 +25,7 @@ namespace ML
             biasesGradientCumulative = new double[outputSize, 1];
             InitializeWeightsAndBiases();
             InitializeWeightsAndBiasesCumulative();
+            iteration = 0;
         }
 
         protected void InitializeWeightsAndBiases() // TESTED AND COMPLETE
@@ -65,6 +67,9 @@ namespace ML
             double[,] Y = optimization.GradientDescent(learningRate, outputGradient, input, weights, biases,
                 ref weightsGradientCumulative, ref biasesGradientCumulative);
 
+            iteration++;
+
+            if (iteration == batchSize) {
                 weights = NetworkFunctions.MatrixSubtraction(weights,
                     NetworkFunctions.ScalarMultiplication(NetworkFunctions.ScalarDivision(weightsGradientCumulative,
                     batchSize), learningRate));
@@ -73,9 +78,10 @@ namespace ML
                     batchSize), learningRate));
 
                 InitializeWeightsAndBiasesCumulative();
+                iteration = 0;
+            }
 
             return Y;
         }
-
     }
 }

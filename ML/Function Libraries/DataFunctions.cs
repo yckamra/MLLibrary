@@ -361,5 +361,68 @@ namespace ML
 
             Console.WriteLine($"CSV file saved at: {filePath}");
         }
+
+        public static double TrainAccuracy(SupervisedNetwork network, double[,] trainInput, double[,] trainOutput)
+        {
+            int rows = trainInput.GetLength(0);
+            int totalRight = 0;
+
+            for(int i = 0; i < rows; i++)
+            {
+                double yPred = network.Predict(NetworkFunctions.GetARow(trainInput, i))[0,0];
+
+                if(yPred > 0.5)
+                {
+                    yPred = 1;
+                }
+                else
+                {
+                    yPred = 0;
+                }
+
+                if (yPred == trainOutput[i, 0])
+                {
+                    totalRight++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            double error = totalRight / (double)rows;
+
+            return error;
+        }
+
+        public static double TestAccuracy(SupervisedNetwork network, double[,] testInput, double[,] testOutput)
+        {
+            int rows = testInput.GetLength(0);
+            int totalRight = 0;
+
+            for (int i = 0; i < rows; i++)
+            {
+                double yPred = network.Predict(NetworkFunctions.GetARow(testInput, i))[0, 0];
+                if (yPred > 0.5)
+                {
+                    yPred = 1;
+                }
+                else
+                {
+                    yPred = 0;
+                }
+
+                if (yPred == testOutput[i, 0])
+                {
+                    totalRight++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            double error = totalRight / (double)rows;
+
+            return error;
+        }
     }
 }

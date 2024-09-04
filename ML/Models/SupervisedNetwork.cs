@@ -71,7 +71,11 @@ namespace ML
             {
                 Console.WriteLine("Epoch: " + i);
 
-                double cost = 0;
+                double batchCost = 0; // cost of batch
+                int batchIteration = 0;
+
+                double epochCost = 0;
+                int numberOfBatches = 0;
 
                 int trainingExamples = yTrue.GetLength(0); // # rows (which is the # of training examples)
                 int numberOfLayers = layers.Count; // Hidden layers, output layer, and loss layer included
@@ -84,7 +88,20 @@ namespace ML
 
                     ForwardPass(ref inputForNextLayer, yTrueForExample);
 
-                    cost += inputForNextLayer[0,0];
+                    batchCost += inputForNextLayer[0,0]; // cost of epoch
+                    batchIteration++; // Increment examples in batch
+
+                    if(batchIteration == batchSize)
+                    {
+                        batchCost /= batchIteration;
+                        // Console.WriteLine("Batch Cost: " + batchCost);
+
+                        epochCost += batchCost;
+                        numberOfBatches++;
+
+                        batchCost = 0;
+                        batchIteration = 0;
+                    }
 
                     layers.Reverse();
 
@@ -97,8 +114,8 @@ namespace ML
 
                     layers.Reverse();
                 }
-                cost /= trainingExamples;
-                Console.WriteLine("Cost: " + cost);
+                epochCost /= numberOfBatches;
+                Console.WriteLine("Epoch Cost: " + epochCost);
             }
         }
 
