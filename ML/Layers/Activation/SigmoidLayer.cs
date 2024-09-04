@@ -29,7 +29,7 @@ namespace ML
 
         private static double[,] SigmoidPrime(double[,] X)
         {
-            double[,] Y = NetworkFunctions.ElementWiseMultiplication(Sigmoid(X), OneMinusSigmoid(X));
+            double[,] Y = NetworkFunctions.ElementWiseMultiplication(Sigmoid(X), OneMinusSigmoid(Sigmoid(X)));
             return Y;
         }
 

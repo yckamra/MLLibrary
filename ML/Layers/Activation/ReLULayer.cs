@@ -44,7 +44,6 @@ namespace ML
 
             for (int i = 0; i < rows; i++)
             {
-
                 if (X[i, 0] > 0)
                 {
                     Y[i, 0] = 1;
@@ -56,6 +55,5 @@ namespace ML
             }
             return Y;
         }
-
     }
 }

@@ -31,7 +31,7 @@ namespace ML
         public override double[,] Backward(double[,] outputGradient, double learningRate, int batchSize,
             OptimizationAlgorithm optimization)
         {
-            return lossPrime(this.yTrue, output);
+            return lossPrime(this.yTrue, input);
         }
     }
 }

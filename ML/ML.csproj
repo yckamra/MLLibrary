@@ -45,7 +45,7 @@
     <Compile Include="Function Libraries\DataFunctions.cs" />
     <Compile Include="Function Libraries\NetworkFunctions.cs" />
     <Compile Include="UI\UI.cs" />
-    <Compile Include="OptimizationAlgorithm.cs" />
+    <Compile Include="Optimization Algorithms\OptimizationAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Layers\" />
@@ -55,6 +55,7 @@
     <Folder Include="Models\" />
     <Folder Include="Function Libraries\" />
     <Folder Include="UI\" />
+    <Folder Include="Optimization Algorithms\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

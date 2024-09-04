@@ -97,6 +97,8 @@ namespace ML
 
                     layers.Reverse();
                 }
+                cost /= trainingExamples;
+                Console.WriteLine("Cost: " + cost);
             }
         }
 
