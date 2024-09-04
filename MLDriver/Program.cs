@@ -40,8 +40,6 @@ namespace MLDriver
                 new ReLULayer(),
                 new Dense(16, 16),
                 new ReLULayer(),
-                new Dense(16, 16),
-                new ReLULayer(),
                 new Dense(16, 8),
                 new ReLULayer(),
                 new Dense(8, 1),
