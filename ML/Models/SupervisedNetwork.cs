@@ -65,7 +65,7 @@ namespace ML
 
         // The input should have a row as a single training example
         public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize,
-            OptimizationAlgorithm optimization) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
+            OptimizationAlgorithm optimization, double[,] featureTestData, double[,] targetTestData) // learning rate, output gradient, input, weights, biases, weightsCumulative, biasesCumulative, outputs a double[,]
         {
             for (int i = 0; i < epochs; i++)
             {
@@ -116,6 +116,12 @@ namespace ML
                 }
                 epochCost /= numberOfBatches;
                 Console.WriteLine("Epoch Cost: " + epochCost);
+
+                double trainAccuracy = DataFunctions.TrainAccuracy(this, input, yTrue); // no touch
+                double testAccuracy = DataFunctions.TestAccuracy(this, featureTestData, targetTestData); // no touch
+
+                Console.WriteLine("Train Accuracy: " + trainAccuracy); // no touch
+                Console.WriteLine("Test Accuracy: " + testAccuracy); // no touch
             }
         }
 

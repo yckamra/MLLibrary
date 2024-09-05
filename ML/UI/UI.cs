@@ -10,7 +10,7 @@ namespace ML
     {
         /*public void Train(double[,] input, double[,] yTrue, int epochs, double learningRate, int batchSize,
     Func<double, double[,], double[,], double[,], double[,], double[,], double[,], double[,]> OptimizationAlgorithm)*/
-        public static void HandleSupervisedTrain(SupervisedNetwork network, double[,] input, double[,] yTrue)
+        public static void HandleSupervisedTrain(SupervisedNetwork network, double[,] input, double[,] yTrue, double[,] featureTestData, double[,] targetTestData)
         {
             int epochs = 0;
             double learningRate = 0;
@@ -74,7 +74,7 @@ namespace ML
             Console.WriteLine("'Gradient descent' is being utilized as optimization algorithm.");
             OptimizationAlgorithm optimization = new OptimizationAlgorithm();
 
-            network.Train(input, yTrue, epochs, learningRate, batchSize, optimization);
+            network.Train(input, yTrue, epochs, learningRate, batchSize, optimization, featureTestData, targetTestData);
         }
 
         public static void HandleData(string filePath, string pathToCSVDirectory, ref double[,] featureTrainData,
