@@ -29,6 +29,27 @@ namespace ML
             }
         }
 
+        public static void DropFeature(List<List<string>> featureData, List<List<string>> featureLabels, string featureToDrop)
+        {
+            int columnNumberForFeature = featureLabels[0].IndexOf(featureToDrop);
+            featureLabels[0].RemoveAt(columnNumberForFeature);
+
+            for(int i = 0; i < featureData.Count; i++)
+            {
+                featureData[i].RemoveAt(columnNumberForFeature);
+            }
+        }
+
+        public static void HandleDropFeatures(List<List<string>> featureData, List<List<string>> featureLabels, List<string> featuresToDrop)
+        {
+            int rows = featureData.Count;
+
+            foreach(string featureToDrop in featuresToDrop)
+            {
+                DataFunctions.DropFeature(featureData, featureLabels, featureToDrop);
+            }
+        }
+
         public static double[,] StringMatrixToDoubleMatrix(List<List<string>> stringMatrix)
         {
             int rows = stringMatrix.Count;

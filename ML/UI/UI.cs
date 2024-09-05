@@ -163,6 +163,53 @@ namespace ML
             DataFunctions.PrintData(featureLabels, targetLabels);
             DataFunctions.PrintData(featureData, targetData);
 
+            // Drop feature names
+
+            Console.WriteLine();
+            Console.WriteLine("Enter feature names to drop from dataset (type name and press enter or type 'DONE' and enter to stop:");
+            List<string> featuresToDrop = new List<string>();
+
+            {
+                string userInput = "";
+
+                while (userInput != "DONE")
+                {
+                    userInput = Console.ReadLine();
+                    if (featuresToDrop.Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else if (userInput == "DONE")
+                    {
+                        continue;
+                    }
+                    else if (!featureLabels[0].Contains(userInput))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        featuresToDrop.Add(userInput);
+                    }
+                }
+            }
+
+            DataFunctions.HandleDropFeatures(featureData, featureLabels, featuresToDrop);
+
+            Console.WriteLine();
+            Console.WriteLine("------------------");
+            Console.WriteLine("Dataset After Drop");
+            Console.WriteLine("------------------");
+            Console.WriteLine();
+            Console.WriteLine("Features: " + (featureData[0].Count));
+            Console.WriteLine("Targets: " + targetData[0].Count);
+            Console.WriteLine("Examples: " + (featureData.Count));
+            Console.WriteLine();
+            DataFunctions.PrintData(featureLabels, targetLabels);
+            DataFunctions.PrintData(featureData, targetData);
+
+
+
             Console.WriteLine();
             Console.WriteLine("Enter feature names to one-hot encode (type name and press enter or type 'DONE' and enter to stop):");
             List<string> featuresToOneHotEncode = new List<string>();
@@ -191,6 +238,9 @@ namespace ML
                     }
                 }
             }
+
+
+
 
             DataFunctions.HandleOneHotEncoding(featureData, featureLabels, featuresToOneHotEncode);
 

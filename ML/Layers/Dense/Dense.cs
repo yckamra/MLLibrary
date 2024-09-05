@@ -43,14 +43,12 @@ namespace ML
                     {
                         weights[i, j] = NetworkFunctions.XavierInitialization(outputSize, inputSize);
                     }
+                    else
+                    {
+                        weights[i, j] = NetworkFunctions.RandomGaussianNumber(0, 0.1);
+                    }
                 }
-                if(initialization == "HeInitialization")
-                {
-                    biases[i, 0] = NetworkFunctions.HeInitialization(outputSize);
-                }else if(initialization == "XavierInitialization")
-                {
-                    biases[i, 0] = NetworkFunctions.XavierInitialization(outputSize, 1);
-                }
+                    biases[i, 0] = 0;
             }
         }
 

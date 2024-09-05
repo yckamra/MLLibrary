@@ -8,9 +8,11 @@ namespace MLDriver
 {
     class MainClass
     {
-        // TODO: for ReLU add He Initialization, for Sigmoid add Xavier/Glorot Initialization, fix batch so
+        // TODO: fix batch so
         // that near end of epoch if current batch is smaller than the batch size we still update weights and biases,
-        // if above initializations do not improve model too much add Dropout and L2 Regularization
+        // if above initializations do not improve model too much add Dropout and L2 Regularization...
+        // BEFORE ALL THIS allow for dropping columns as this could be adding a dimensionality problem to our model,
+        // we can also try adding Adam optimization which includes momentum
         
         public static void Main(string[] args)
         {
