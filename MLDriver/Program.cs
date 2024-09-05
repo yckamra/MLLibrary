@@ -8,6 +8,10 @@ namespace MLDriver
 {
     class MainClass
     {
+        // TODO: for ReLU add He Initialization, for Sigmoid add Xavier/Glorot Initialization, fix batch so
+        // that near end of epoch if current batch is smaller than the batch size we still update weights and biases,
+        // if above initializations do not improve model too much add Dropout and L2 Regularization
+        
         public static void Main(string[] args)
         {
             // (1) Copy your CSV to CSV folder in driver and do:
@@ -36,11 +40,11 @@ namespace MLDriver
             SupervisedNetwork network = new SupervisedNetwork(); // no touch
 
             network.layers = new List<Layer> { // <--- Add and subtract layers as you please (below is example network)
-                new Dense(12,6),
+                new Dense(12,8, "HeInitialization"),
                 new ReLULayer(),
-                new Dense(6, 6),
+                new Dense(8, 8, "HeInitialization"),
                 new ReLULayer(),
-                new Dense(6, 1),
+                new Dense(8, 1, "XavierInitialization"),
                 new SigmoidLayer(),
                 new BinaryCrossEntropyLayer()
             };
@@ -49,14 +53,7 @@ namespace MLDriver
 
             UI.HandleSupervisedTrain(network, featureTrainData, targetTrainData, featureTestData, targetTestData);
 
-            // (6) Test the model and diagnose
-            /*double trainAccuracy = DataFunctions.TrainAccuracy(network, featureTrainData, targetTrainData); // no touch
-            double testAccuracy = DataFunctions.TestAccuracy(network, featureTestData, targetTestData); // no touch
-
-            Console.WriteLine("Train Accuracy: " + trainAccuracy); // no touch
-            Console.WriteLine("Test Accuracy: " + testAccuracy); // no touch*/
-
-            // (7) Use the model // TODO: remember that any new inputs that we put in MUST BE NORMALIZED
+            // (6) Use the model // TODO: remember that any new inputs that we put in MUST BE NORMALIZED
 
         }
     }

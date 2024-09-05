@@ -120,8 +120,8 @@ namespace ML
                 double trainAccuracy = DataFunctions.TrainAccuracy(this, input, yTrue); // no touch
                 double testAccuracy = DataFunctions.TestAccuracy(this, featureTestData, targetTestData); // no touch
 
-                Console.WriteLine("Train Accuracy: " + trainAccuracy); // no touch
-                Console.WriteLine("Test Accuracy: " + testAccuracy); // no touch
+                Console.WriteLine("Train Accuracy: " + Math.Round((trainAccuracy * 100), 1) + "%"); // no touch
+                Console.WriteLine("Test Accuracy: " + Math.Round((testAccuracy * 100), 1) + "%"); // no touch
             }
         }
 

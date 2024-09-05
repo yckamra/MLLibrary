@@ -14,8 +14,9 @@ namespace ML
         protected double[,] weightsGradientCumulative;
         protected double[,] biasesGradientCumulative;
         protected int iteration;
+        protected string initialization;
 
-        public Dense(int inputSize, int outputSize) // TESTED AND COMPLETE
+        public Dense(int inputSize, int outputSize, string initialization) // TESTED AND COMPLETE
         {
             this.inputSize = inputSize;
             this.outputSize = outputSize;
@@ -23,6 +24,7 @@ namespace ML
             this.biases = new double[outputSize, 1];
             weightsGradientCumulative = new double[outputSize, inputSize];
             biasesGradientCumulative = new double[outputSize, 1];
+            this.initialization = initialization;
             InitializeWeightsAndBiases();
             InitializeWeightsAndBiasesCumulative();
             iteration = 0;
@@ -34,9 +36,21 @@ namespace ML
             {
                 for (int j = 0; j < inputSize; j++)
                 {
-                    weights[i, j] = NetworkFunctions.RandomGaussianNumber();
+                    if(initialization == "HeInitialization")
+                    {
+                        weights[i, j] = NetworkFunctions.HeInitialization(outputSize);
+                    }else if(initialization == "XavierInitialization")
+                    {
+                        weights[i, j] = NetworkFunctions.XavierInitialization(outputSize, inputSize);
+                    }
                 }
-                biases[i, 0] = NetworkFunctions.RandomGaussianNumber();
+                if(initialization == "HeInitialization")
+                {
+                    biases[i, 0] = NetworkFunctions.HeInitialization(outputSize);
+                }else if(initialization == "XavierInitialization")
+                {
+                    biases[i, 0] = NetworkFunctions.XavierInitialization(outputSize, 1);
+                }
             }
         }
 

@@ -14,7 +14,7 @@ namespace ML // TODO: Encapsulate, organize, and error check; all Handle functio
 
         private static System.Random rand = new System.Random();
 
-        public static double RandomGaussianNumber(double mean = 0, double stdDev = 1) // TESTED AND COMPLETE
+        public static double RandomGaussianNumber(double mean, double stdDev) // TESTED AND COMPLETE
         {
             double randNormal = 0;
 
@@ -27,7 +27,18 @@ namespace ML // TODO: Encapsulate, organize, and error check; all Handle functio
             return randNormal;
         }
 
+        public static double HeInitialization(int rows) // input values
+        {
+            double standardDeviation = Math.Sqrt(2.0 / rows);
 
+            return RandomGaussianNumber(0, standardDeviation);
+        }
+
+        public static double XavierInitialization(int rows, int columns)
+        {
+            double limit = Math.Sqrt(6.0 / (rows + columns));
+            return (2 * limit * rand.NextDouble()) - limit;
+        }
 
 
 
