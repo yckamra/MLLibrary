@@ -11,7 +11,6 @@ namespace MLDriver
         // TODO: fix batch so
         // that near end of epoch if current batch is smaller than the batch size we still update weights and biases,
         // if above initializations do not improve model too much add Dropout and L2 Regularization...
-        // BEFORE ALL THIS allow for dropping columns as this could be adding a dimensionality problem to our model,
         // we can also try adding Adam optimization which includes momentum
         
         public static void Main(string[] args)
@@ -42,7 +41,7 @@ namespace MLDriver
             SupervisedNetwork network = new SupervisedNetwork(); // no touch
 
             network.layers = new List<Layer> { // <--- Add and subtract layers as you please (below is example network)
-                new Dense(12,8, "HeInitialization"),
+                new Dense(9,8, "HeInitialization"),
                 new ReLULayer(),
                 new Dense(8, 8, "HeInitialization"),
                 new ReLULayer(),

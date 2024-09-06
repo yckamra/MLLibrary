@@ -185,7 +185,14 @@ namespace ML
 
         public static void PrintData(List<List<string>> featureData, List<List<string>> targetData) // TESTED AND COMPLETE
         {
-            for (int i = 0; i < featureData.Count; i++)
+            int numberOfRowsToShow = 10;
+            if(numberOfRowsToShow > featureData.Count)
+            {
+                numberOfRowsToShow = featureData.Count;
+            }
+
+
+            for (int i = 0; i < numberOfRowsToShow; i++)
             {
                 string row = "";
                 for (int j = 0; j < featureData[0].Count; j++)
@@ -214,7 +221,14 @@ namespace ML
 
         public static void PrintData(double[,] featureData, double[,] targetData) // TESTED AND COMPLETE
         {
-            for (int i = 0; i < featureData.GetLength(0); i++)
+            int numberOfRowsToShow = 10;
+            if (numberOfRowsToShow > featureData.GetLength(0))
+            {
+                numberOfRowsToShow = featureData.GetLength(0);
+            }
+
+
+            for (int i = 0; i < numberOfRowsToShow; i++)
             {
                 string row = "";
                 for (int j = 0; j < featureData.GetLength(1); j++)
