@@ -2,7 +2,9 @@
 
 A custom-built supervised learning neural network library created from scratch in **C#**, designed for flexibility, performance, and educational value. This library not only implements essential neural network components but also handles key data preprocessing tasks such as one-hot encoding, dataset splitting, and missing feature checks. 
 
-With functionality aimed at both performance and understanding the inner workings of machine learning, the library achieves **93.1% accuracy on the MNIST test set**. While functional, further optimization is underway to improve training time performance. IMPORTANT: As mentioned above, this project was more of a learning experience and as a way for me to transfer Python neural networks to C# required by Unity; My library allows for the creation of custom neural network architectures and instead of using a Unity Plugin to allow Python ML models to run in Unity, I just put the weights and biases of the Python model into a custom C# model (seen in my Digit Recognizer project).
+With functionality aimed at both performance and understanding the inner workings of machine learning, the library achieves **93.1% accuracy on the MNIST test set**. While functional, further optimization is underway to improve training time performance.
+
+IMPORTANT: As mentioned above, this project was more of a learning experience and as a way for me to transfer Python neural networks to C# required by Unity; My library allows for the creation of custom neural network architectures and instead of using a Unity Plugin to allow Python ML models to run in Unity, I just put the weights and biases of the Python model into a custom C# model (seen in my Digit Recognizer project).
 
 ---
 
